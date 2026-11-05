@@ -1,3 +1,4 @@
+import { passkey } from "@better-auth/passkey";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
@@ -10,7 +11,7 @@ import { writeAudit } from "./audit";
 import { sendEmail } from "./email";
 import { env, isProduction } from "./env";
 import { hashPassword, verifyPassword } from "./password";
-import { canCreateStaffSession, isStaff } from "./permissions";
+import { canCreateStaffSession, canRegisterPasskey, isStaff, passkeyRegistrationPaths, passkeySignInPath } from "./permissions";
 import { consume, isBlocked, limits, reset } from "./rate-limit";
 
 const google =
@@ -41,6 +42,10 @@ export const auth = betterAuth({
     "/change-email",
     "/update-session",
     "/delete-user",
+    // Passkeys are removed through the Super Admin's security page, which records it in the audit log.
+    "/passkey/delete-passkey",
+    "/passkey/update-passkey",
+    "/passkey/list-user-passkeys",
   ],
   emailAndPassword: {
     enabled: true,
@@ -78,6 +83,9 @@ export const auth = betterAuth({
       "/email-otp/send-verification-otp": { window: 3600, max: 10 },
       "/two-factor/*": { window: 300, max: 10 },
       "/change-password": { window: 3600, max: 5 },
+      "/passkey/*": { window: 300, max: 20 },
+      // Every page asks who is signed in; it reads only the caller's own session, so it can be generous.
+      "/get-session": { window: 60, max: 300 },
     },
   },
   advanced: {
@@ -95,7 +103,11 @@ export const auth = betterAuth({
           if (!owner || owner.disabledAt) {
             throw new APIError("FORBIDDEN", { message: "This account is disabled." });
           }
-          if (isStaff(owner.role) && !canCreateStaffSession(context?.path)) {
+          // A passkey replaces password + 2FA, so only the Super Admin may sign in with one.
+          if (context?.path === passkeySignInPath && owner.role !== "super_admin") {
+            throw new APIError("FORBIDDEN", { message: "Passkey sign-in is not available for this account." });
+          }
+          if (isStaff(owner.role) && !canCreateStaffSession(context?.path, owner.role)) {
             throw new APIError("FORBIDDEN", { message: "Staff must use the staff sign-in page." });
           }
         },
@@ -137,6 +149,17 @@ export const auth = betterAuth({
           throw new APIError("BAD_REQUEST", { message: "Device trust is not available." });
         }
       }
+      // Names show on dashboards and in the audit log, so keep them to a sensible length.
+      if (ctx.path === "/update-user" && ctx.body?.name !== undefined) {
+        const name = typeof ctx.body.name === "string" ? ctx.body.name.trim() : "";
+        if (name.length < 2 || name.length > 80) throw new APIError("BAD_REQUEST", { message: "Please use 2 to 80 characters." });
+      }
+      if (passkeyRegistrationPaths.has(ctx.path)) {
+        const current = await getSessionFromCtx(ctx);
+        if (!canRegisterPasskey(current?.user as { role?: string; twoFactorEnabled?: boolean } | undefined)) {
+          throw new APIError("FORBIDDEN", { message: "Passkeys are available to the Super Admin only." });
+        }
+      }
       if (ctx.path === "/two-factor/disable") {
         const current = await getSessionFromCtx(ctx);
         if (isStaff((current?.user as { role?: string } | undefined)?.role)) {
@@ -145,6 +168,14 @@ export const auth = betterAuth({
       }
     }),
     after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path === "/change-password" && !(ctx.context.returned instanceof APIError)) {
+        const changed = ctx.context.newSession?.user ?? (await getSessionFromCtx(ctx))?.user;
+        const role = (changed as { role?: string } | undefined)?.role;
+        if (changed && isStaff(role)) {
+          await writeAudit({ actorId: changed.id, actorRole: role, action: "auth.password_changed", entity: "user", entityId: changed.id });
+        }
+        return;
+      }
       if (ctx.path !== "/sign-in/email") return;
       const email = String(ctx.body?.email ?? "");
       const failed =
@@ -175,6 +206,18 @@ export const auth = betterAuth({
       issuer: "Dar Al Falak",
       backupCodeOptions: { amount: 10, storeBackupCodes: "encrypted" },
       trustDeviceMaxAge: 1,
+    }),
+    passkey({
+      rpID: new URL(env.BETTER_AUTH_URL).hostname,
+      rpName: "Dar Al Falak",
+      origin: env.BETTER_AUTH_URL,
+      // The passkey must live on the device and ask for a fingerprint, face or PIN every time.
+      authenticatorSelection: { residentKey: "required", userVerification: "required" },
+      registration: {
+        afterVerification: async ({ user }) => {
+          await writeAudit({ actorId: user.id, actorRole: "super_admin", action: "auth.passkey_added", entity: "user", entityId: user.id });
+        },
+      },
     }),
     haveIBeenPwned(),
     ...(env.TURNSTILE_SECRET_KEY

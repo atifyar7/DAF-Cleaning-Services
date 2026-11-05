@@ -37,6 +37,21 @@ export default function StaffLoginPage() {
     }
   }
 
+  // A passkey replaces password + code. The server allows it for Super Admins only.
+  async function signInWithPasskey() {
+    setBusy(true);
+    setError("");
+    try {
+      const { error } = await authClient.signIn.passkey();
+      if (error) setError(error.status === 429 ? t("errors.tooMany") : t("staff.passkeyFailed"));
+      else finish();
+    } catch {
+      setError(t("staff.passkeyFailed"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function submitCode(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
@@ -75,6 +90,20 @@ export default function StaffLoginPage() {
           <ErrorText>{error}</ErrorText>
           <Button disabled={busy}>{t("staff.continue")}</Button>
         </form>
+        <div className="flex items-center gap-3 text-xs text-muted">
+          <span className="h-px flex-1 bg-border" />
+          {t("staff.or")}
+          <span className="h-px flex-1 bg-border" />
+        </div>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={signInWithPasskey}
+          className="rounded-lg border border-border px-4 py-2.5 font-medium transition hover:border-accent hover:text-accent disabled:opacity-60"
+        >
+          {t("staff.passkey")}
+        </button>
+        <p className="-mt-2 text-center text-xs text-muted">{t("staff.passkeyNote")}</p>
       </AuthCard>
     );
   }

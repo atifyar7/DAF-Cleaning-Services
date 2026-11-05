@@ -39,6 +39,25 @@ At `/en/admin` (Admins and the Super Admin). The team can:
 Every change is checked on the server, runs under row-level security, and writes to the audit log.
 Customer messages are queued for the notifications phase. The logic is in `src/lib/admin`.
 
+## Super Admin dashboard
+
+At `/en/super-admin` (Super Admins only):
+
+- **Staff:** create Admin and Super Admin accounts (the temporary password shows once), change roles,
+  reset passwords or authenticators, disable and enable. Nobody can change their own access, and the
+  last active Super Admin can never be removed.
+- **Services & prices:** hourly price or quote, names in both languages, on/off for online booking.
+  Prices apply to new bookings only.
+- **Business settings:** cleaner capacity, hours, job size, booking window and free-cancellation window,
+  checked together so booking can never become impossible.
+- **Reports:** revenue (completed jobs), jobs, cancellations, quotes, services, areas and cleaner
+  workload, compared with the previous period, plus a CSV download (rate-limited and logged).
+- **Audit log:** every staff action and sign-in, filterable; entries can never be edited or deleted.
+- **My security:** passkeys (fingerprint, face or phone) and password changes. Admins get password
+  changes at `/en/admin/security`.
+
+The logic is in `src/lib/super-admin`. Passkey sign-in is limited to Super Admins in `src/lib/auth.ts`.
+
 ## Checks
 
 ```

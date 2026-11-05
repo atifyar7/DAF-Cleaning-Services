@@ -3,7 +3,9 @@ import {
   allPermissions,
   can,
   canCreateStaffSession,
+  canRegisterPasskey,
   isStaffSessionExpired,
+  passkeySignInPath,
   staffSessionMaxAgeMs,
 } from "@/lib/permissions";
 
@@ -42,6 +44,17 @@ describe("staff session rules", () => {
     expect(canCreateStaffSession("/sign-in/email-otp")).toBe(false);
     expect(canCreateStaffSession("/callback/:id")).toBe(false);
     expect(canCreateStaffSession(undefined)).toBe(false);
+  });
+
+  it("lets only the Super Admin sign in or register with a passkey", () => {
+    expect(canCreateStaffSession(passkeySignInPath, "super_admin")).toBe(true);
+    expect(canCreateStaffSession(passkeySignInPath, "admin")).toBe(false);
+    expect(canCreateStaffSession(passkeySignInPath)).toBe(false);
+    expect(canRegisterPasskey({ role: "super_admin", twoFactorEnabled: true })).toBe(true);
+    expect(canRegisterPasskey({ role: "super_admin", twoFactorEnabled: false })).toBe(false);
+    expect(canRegisterPasskey({ role: "admin", twoFactorEnabled: true })).toBe(false);
+    expect(canRegisterPasskey({ role: "customer", twoFactorEnabled: true })).toBe(false);
+    expect(canRegisterPasskey(null)).toBe(false);
   });
 
   it("expires sessions after the hard limit", () => {

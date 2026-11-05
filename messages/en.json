@@ -47,7 +47,11 @@
     "backup": "Backup code",
     "useBackup": "Use a backup code",
     "useTotp": "Use authenticator app",
-    "verify": "Verify"
+    "verify": "Verify",
+    "passkey": "Sign in with a passkey",
+    "passkeyNote": "For Super Admins who have set up a passkey.",
+    "or": "or",
+    "passkeyFailed": "Passkey sign-in did not work. Please use your password and code."
   },
   "security": {
     "title": "Set up two-factor authentication",
@@ -78,15 +82,6 @@
       "completed": "Completed",
       "cancelled": "Cancelled"
     }
-  },
-  "admin": {
-    "title": "Admin dashboard",
-    "body": "Bookings, calendar and cleaner assignment will appear here."
-  },
-  "superAdmin": {
-    "title": "Super Admin dashboard",
-    "body": "Staff, pricing, settings, reports and audit logs will appear here.",
-    "adminLink": "Open Admin dashboard"
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",

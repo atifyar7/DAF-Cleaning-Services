@@ -123,6 +123,20 @@ describe("customers", () => {
     expect((await browser.session()).user.role).toBe("customer");
   });
 
+  it("cannot set an empty or over-long name", async () => {
+    const browser = new Browser();
+    await customerSignIn(browser, email());
+    expect((await browser.post("/update-user", { name: "x".repeat(81) })).status).toBe(400);
+    expect((await browser.post("/update-user", { name: " " })).status).toBe(400);
+    expect((await browser.post("/update-user", { name: "Layla Haddad" })).status).toBe(200);
+  });
+
+  it("cannot register a passkey", async () => {
+    const browser = new Browser();
+    await customerSignIn(browser, email());
+    expect((await browser.request(`${authUrl}/passkey/generate-register-options`)).status).toBe(403);
+  });
+
   it("cannot sign up with a role or a password", async () => {
     const browser = new Browser();
     const response = await browser.post("/sign-up/email", {

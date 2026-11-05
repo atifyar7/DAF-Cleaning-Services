@@ -47,8 +47,18 @@ const staffSessionPaths = new Set([
   "/change-password",
 ]);
 
-export function canCreateStaffSession(path: string | undefined) {
+/** Passkey sign-in and registration. A passkey replaces password + 2FA, so only the Super Admin may use one. */
+export const passkeySignInPath = "/passkey/verify-authentication";
+export const passkeyRegistrationPaths = new Set(["/passkey/generate-register-options", "/passkey/verify-registration"]);
+
+export function canCreateStaffSession(path: string | undefined, role?: string | null) {
+  if (path === passkeySignInPath) return role === "super_admin";
   return !!path && staffSessionPaths.has(path);
+}
+
+/** Only a Super Admin who has already set up an authenticator can add a passkey. */
+export function canRegisterPasskey(user: { role?: string | null; twoFactorEnabled?: boolean | null } | null | undefined) {
+  return user?.role === "super_admin" && !!user.twoFactorEnabled;
 }
 
 export const staffSessionMaxAgeMs = 12 * 60 * 60 * 1000;

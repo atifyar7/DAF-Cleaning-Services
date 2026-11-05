@@ -15,9 +15,10 @@ export function listHref(path: string, current: Record<string, string | number |
   return query ? `${path}?${query}` : path;
 }
 
+/** A page's title card. It sits partly over the dark brand band, so it has its own glass background to stay readable in both themes. */
 export function PageHeader({ title, description, action }: { title: string; description?: string; action?: ReactNode }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl glass px-5 py-4 shadow-card">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
         {description && <p className="mt-1 text-sm text-muted">{description}</p>}
