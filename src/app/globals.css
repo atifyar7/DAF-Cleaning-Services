@@ -1,0 +1,321 @@
+@import "tailwindcss";
+
+/*
+ * Brand colours sampled from public/brand/logo.jpg: #184040, #408078, #80c8a0.
+ * Pages use the semantic tokens below, so they adapt to both themes.
+ * Theme order: data-theme on <html> (visitor's choice), then the system setting.
+ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #184040;
+  --surface: #f6fbf8;
+  --surface-raised: #ffffff;
+  --muted: #4d6b6b;
+  --border: #d5e5de;
+  --primary: #184040;
+  --primary-hover: #245656;
+  --primary-foreground: #ffffff;
+  --accent: #2f6b64;
+  --accent-soft: #e3f3ea;
+  --highlight: #80c8a0;
+  --danger: #b3261e;
+  --danger-soft: #fbe9e7;
+  --warning: #8a5300;
+  --warning-soft: #fdf1dc;
+  --glass-bg: rgb(255 255 255 / 0.8);
+  --glass-border: rgb(255 255 255 / 0.75);
+  --glass-highlight: rgb(255 255 255 / 0.7);
+  --glow-mint: rgb(128 200 160 / 0.35);
+  --glow-teal: rgb(64 128 120 / 0.22);
+  --hero: #0d2224;
+  --card-shadow: 0 18px 40px -24px rgb(24 64 64 / 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --background: #0d2224;
+    --foreground: #e6f2ed;
+    --surface: #133033;
+    --surface-raised: #183a3d;
+    --muted: #a5c0ba;
+    --border: #2a5053;
+    --primary: #80c8a0;
+    --primary-hover: #97d6b3;
+    --primary-foreground: #103338;
+    --accent: #80c8a0;
+    --accent-soft: #1d4543;
+    --highlight: #80c8a0;
+    --danger: #ff8a80;
+    --danger-soft: #3b2220;
+    --warning: #f2c063;
+    --warning-soft: #362b14;
+    --glass-bg: rgb(24 58 61 / 0.5);
+    --glass-border: rgb(255 255 255 / 0.09);
+    --glass-highlight: rgb(255 255 255 / 0.07);
+    --glow-mint: rgb(128 200 160 / 0.16);
+    --glow-teal: rgb(64 128 120 / 0.28);
+    --card-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.7);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0d2224;
+  --foreground: #e6f2ed;
+  --surface: #133033;
+  --surface-raised: #183a3d;
+  --muted: #a5c0ba;
+  --border: #2a5053;
+  --primary: #80c8a0;
+  --primary-hover: #97d6b3;
+  --primary-foreground: #103338;
+  --accent: #80c8a0;
+  --accent-soft: #1d4543;
+  --highlight: #80c8a0;
+  --danger: #ff8a80;
+  --danger-soft: #3b2220;
+  --warning: #f2c063;
+  --warning-soft: #362b14;
+  --glass-bg: rgb(24 58 61 / 0.5);
+  --glass-border: rgb(255 255 255 / 0.09);
+  --glass-highlight: rgb(255 255 255 / 0.07);
+  --glow-mint: rgb(128 200 160 / 0.16);
+  --glow-teal: rgb(64 128 120 / 0.28);
+  --card-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.7);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-highlight: var(--highlight);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-hero: var(--hero);
+  --shadow-card: var(--card-shadow);
+  --font-sans: var(--font-geist-sans);
+}
+
+html {
+  --font-body: var(--font-geist-sans);
+}
+
+html[lang="ar"] {
+  --font-body: var(--font-plex-arabic);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+}
+
+/* Motion. Everything respects the visitor's reduced-motion setting, and stays visible without JavaScript. */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@keyframes slow-zoom {
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.hero-photo {
+  animation: slow-zoom 18s ease-out forwards;
+}
+
+.fade-up {
+  animation: fade-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+
+.fade-up-2 {
+  animation-delay: 0.12s;
+}
+
+.fade-up-3 {
+  animation-delay: 0.24s;
+}
+
+.fade-up-4 {
+  animation-delay: 0.36s;
+}
+
+details[open] .faq-answer {
+  animation: fade-up 0.3s ease-out;
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal],
+  [data-stagger] > * {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  [data-reveal][data-shown],
+  [data-stagger][data-shown] > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  [data-stagger] > :nth-child(2) {
+    transition-delay: 0.08s;
+  }
+
+  [data-stagger] > :nth-child(3) {
+    transition-delay: 0.16s;
+  }
+
+  [data-stagger] > :nth-child(4) {
+    transition-delay: 0.24s;
+  }
+
+  [data-stagger] > :nth-child(5) {
+    transition-delay: 0.32s;
+  }
+
+  [data-stagger] > :nth-child(n + 6) {
+    transition-delay: 0.4s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.map-pin span {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid #ffffff;
+  border-radius: 50% 50% 50% 0;
+  background: #184040;
+  transform: rotate(-45deg);
+  box-shadow: 0 6px 14px rgb(0 0 0 / 0.35);
+}
+
+/*
+ * Glass-cleaning hero. The glass, wiper and hint only show when JavaScript can run and the visitor
+ * has not asked for reduced motion. Until the canvas is drawn, a CSS fog stands in for it, and if the
+ * script never arrives the fog clears on its own so the hero is never left hidden.
+ */
+.glass-surface,
+.glass-wiper,
+.glass-hint {
+  display: none;
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .glass-surface,
+  .glass-hint {
+    display: block;
+  }
+
+  .glass-wiper {
+    display: block;
+    filter: drop-shadow(0 18px 22px rgb(0 0 0 / 0.35)) drop-shadow(0 3px 4px rgb(0 0 0 / 0.25));
+    will-change: transform;
+  }
+
+  .glass-wiper:not([data-ready]) {
+    opacity: 0;
+  }
+
+  .glass-surface:not([data-ready]) {
+    background:
+      radial-gradient(60% 50% at 30% 30%, rgb(255 255 255 / 0.22), transparent 70%),
+      linear-gradient(to bottom, rgb(228 238 234 / 0.74), rgb(214 228 222 / 0.84));
+    animation: glass-give-up 0.6s ease-out 4s forwards;
+  }
+
+  .glass-hint {
+    display: flex;
+  }
+
+  .glass-hint-dot {
+    animation: glass-hint 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes glass-give-up {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes glass-hint {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/*
+ * Frosted glass for the customer dashboard: translucent cards that blur the softly lit backdrop
+ * behind them. Browsers without backdrop blur get solid cards.
+ */
+.glass {
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    var(--card-shadow);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--surface-raised);
+  }
+}
+
+.glass-backdrop {
+  background:
+    radial-gradient(40rem 28rem at 8% 18%, var(--glow-mint), transparent 70%),
+    radial-gradient(36rem 30rem at 92% 40%, var(--glow-teal), transparent 70%),
+    radial-gradient(42rem 26rem at 30% 85%, var(--glow-mint), transparent 70%),
+    radial-gradient(30rem 24rem at 85% 95%, var(--glow-teal), transparent 70%),
+    var(--surface);
+}

@@ -1,0 +1,101 @@
+{
+  "brand": {
+    "name": "Dar Al Falak",
+    "full": "Dar Al Falak Cleaning Services LLC",
+    "tagline": "Your One Stop Cleaning Services"
+  },
+  "nav": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "staff": "Staff sign in",
+    "language": "العربية",
+    "theme": "Switch between light and dark theme",
+    "home": "Home",
+    "services": "Services",
+    "pricing": "Pricing",
+    "contracts": "Monthly Contracts",
+    "about": "About Us",
+    "faq": "FAQs",
+    "contact": "Contact",
+    "book": "Book Now",
+    "menu": "Open menu",
+    "close": "Close menu",
+    "viewAll": "View all services",
+    "account": "My account"
+  },
+  "login": {
+    "title": "Sign in to your account",
+    "subtitle": "We'll email you a 6-digit code. No password needed.",
+    "email": "Email address",
+    "sendCode": "Send code",
+    "code": "6-digit code",
+    "verify": "Verify and sign in",
+    "useAnother": "Use a different email",
+    "google": "Continue with Google",
+    "or": "or"
+  },
+  "staff": {
+    "title": "Staff sign in",
+    "subtitle": "For Dar Al Falak team members only.",
+    "email": "Work email",
+    "password": "Password",
+    "continue": "Continue",
+    "totpTitle": "Two-factor authentication",
+    "totpHelp": "Enter the 6-digit code from your authenticator app.",
+    "totp": "Authenticator code",
+    "backupHelp": "Enter one of your backup codes.",
+    "backup": "Backup code",
+    "useBackup": "Use a backup code",
+    "useTotp": "Use authenticator app",
+    "verify": "Verify"
+  },
+  "security": {
+    "title": "Set up two-factor authentication",
+    "subtitle": "This is required for all staff before you can use the dashboard.",
+    "password": "Confirm your password",
+    "start": "Start setup",
+    "scan": "Scan this QR code with Google Authenticator or a similar app, then enter the 6-digit code.",
+    "manual": "Can't scan it? Enter this key manually:",
+    "code": "6-digit code",
+    "confirm": "Confirm and turn on",
+    "backupTitle": "Save your backup codes",
+    "backupHelp": "Each code works once if you lose your phone. Keep them somewhere safe and offline. They won't be shown again.",
+    "done": "I've saved my codes"
+  },
+  "account": {
+    "title": "My account",
+    "welcome": "Welcome, {name}",
+    "empty": "You have no bookings yet.",
+    "bookings": "My bookings",
+    "bookNow": "Book a service",
+    "reference": "Reference",
+    "quote": "Quote pending",
+    "status": {
+      "pending": "Awaiting confirmation",
+      "confirmed": "Confirmed",
+      "assigned": "Team assigned",
+      "in_progress": "In progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "admin": {
+    "title": "Admin dashboard",
+    "body": "Bookings, calendar and cleaner assignment will appear here."
+  },
+  "superAdmin": {
+    "title": "Super Admin dashboard",
+    "body": "Staff, pricing, settings, reports and audit logs will appear here.",
+    "adminLink": "Open Admin dashboard"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "tooMany": "Too many attempts. Please try again later.",
+    "invalidLogin": "That email or password is incorrect.",
+    "invalidCode": "That code is incorrect or has expired.",
+    "staffOnlyPage": "Staff must use the staff sign-in page.",
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The page you're looking for doesn't exist.",
+    "home": "Back to home"
+  }
+}
