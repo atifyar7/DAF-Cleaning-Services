@@ -13,7 +13,7 @@ async function main() {
   if (!email?.includes("@")) throw new Error("Usage: npm run admin:create -- <email> [--role=admin]");
 
   const password = randomBytes(18).toString("base64url");
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
+  const client = new Client({ connectionString: process.env.DATABASE_APP_URL });
   await client.connect();
   await client.query("begin");
 

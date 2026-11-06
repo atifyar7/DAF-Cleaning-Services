@@ -5,12 +5,16 @@ Built with Next.js, PostgreSQL, Drizzle and Better Auth. English and Arabic, lig
 
 ## Run it locally
 
-Use two terminals.
+The database is on Neon (project `billowing-forest-34630271`, branch `production`, Singapore). Its
+connection settings are in `.env.local`.
 
 ```
-npm run db:start     # terminal 1: private local database on port 5544, keep it running
-npm run dev          # terminal 2: app at http://localhost:3000
+npm run dev          # app at http://localhost:3000
 ```
+
+`npm run db:start` starts the old local database, which the app no longer uses. Do not run `npm test`
+against the production branch: the tests create accounts and permanent audit entries. Point
+`.env.local` at a separate Neon branch for testing.
 
 Sign-in codes are printed in the `npm run dev` terminal until the email provider is connected.
 
@@ -77,8 +81,10 @@ npm run db:seed      # placeholder prices and settings
 
 ## Before going live
 
-- Set `BETTER_AUTH_SECRET`, `DATABASE_URL` and `BETTER_AUTH_URL` on the host. The app uses the
-  limited `daf_app` database account; migrations use the owner account (`DATABASE_OWNER_URL`).
+- Set `BETTER_AUTH_SECRET`, `DATABASE_APP_URL` and `BETTER_AUTH_URL` on the host. The app connects only
+  through `DATABASE_APP_URL`: the limited `daf_app` account on Neon's pooled host, which cannot bypass
+  row-level security. It never reads `DATABASE_URL`, which Neon's tools set to the owner account
+  (`neondb_owner` can bypass row-level security). Migrations use the owner's direct host (`DATABASE_OWNER_URL`).
 - Make the site reachable only through Cloudflare. `CLIENT_IP_HEADER` trusts `cf-connecting-ip`,
   so direct access to the server would let visitors fake their IP and dodge rate limits.
 - Connect an email provider in `src/lib/email.ts`. Sign-in codes fail in production until then.

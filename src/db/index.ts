@@ -3,7 +3,9 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "./schema";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 10 });
+// The app connects as daf_app, which cannot bypass row-level security. It deliberately does not read
+// DATABASE_URL: Neon's tools set that to the owner account, which bypasses every policy.
+const pool = new Pool({ connectionString: process.env.DATABASE_APP_URL, max: 10 });
 
 export const db = drizzle(pool, { schema });
 

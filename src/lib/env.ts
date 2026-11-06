@@ -2,7 +2,8 @@ import { z } from "zod";
 
 const schema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-  DATABASE_URL: z.url(),
+  // The limited daf_app account (pooled). See src/db/index.ts.
+  DATABASE_APP_URL: z.url(),
   BETTER_AUTH_SECRET: z.string().min(32),
   BETTER_AUTH_URL: z.url(),
   // Header holding the visitor's real IP. Only trust it when the app is reachable solely through that proxy.
